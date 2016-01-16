@@ -1,0 +1,41 @@
+#!/usr/bin/env ruby
+require 'gli'
+require 'fileutils'
+require 'json'
+require 'colorize'
+require 'open3'
+require_relative '../lib/inspec-multi-server'
+require 'bundler'
+include GLI::App
+
+require_relative '../lib/inspec-multi-server-commands'
+
+program_desc 'command line tool for inspec to run inspec tests on multiple servers.'
+
+version InSpecMultiServer::VERSION
+config_file = File.expand_path(File.join('~', '.inspec-multi-server'))
+if File.readable?(config_file)
+  settings = InSpecMultiServer::Config::Settings.load(config_file)
+  InSpecMultiServer::Config::Settings.current = settings
+else
+  File.open(config_file, 'w') do |file|
+    file.write(File.read(File.join('lib','inSpecMultiServer','config','example_config.json')))
+  end
+  puts "No config File found. Created example config file in your home directory."
+  exit
+end
+
+# Use argument validation
+arguments :strict
+
+accept Array do |value|
+  value.split(/,/).map(&:strip)
+end
+
+switch([:v, :verbose], :desc => "Show additional output.")
+exit run(ARGV)
+
+on_error do |ex|
+  # evaluate to true or false
+  puts "Sorry, there was an issue! #{ex}".colorize(:red)
+end

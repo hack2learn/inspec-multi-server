@@ -1,0 +1,20 @@
+{
+  "cookbook-name": {
+    "development": {
+      "path": "/path/to/cookbook",
+      "servers": [
+        {
+          "user": "username",
+          "publickey": "~/.ssh/id_rsa",
+          "host": "localhost"
+
+        },
+        {
+          "user": "username",
+          "publickey": "~/.ssh/id_rsa",
+          "host": "localhost1"
+        }
+      ]
+    }
+  }
+}
